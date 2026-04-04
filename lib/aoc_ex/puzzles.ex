@@ -18,7 +18,9 @@ defmodule AocEx.Puzzles do
 
   """
   def list_puzzles do
-    Repo.all(Puzzle)
+    Puzzle
+    |> order_by([p], desc: p.year, asc: p.day)
+    |> Repo.all()
   end
 
   @doc """
@@ -100,5 +102,18 @@ defmodule AocEx.Puzzles do
   """
   def change_puzzle(%Puzzle{} = puzzle, attrs \\ %{}) do
     Puzzle.changeset(puzzle, attrs)
+  end
+
+  @doc """
+  Get a single puzzle from a year and a day.
+
+  ## Examples
+
+      iex> get_puzzle!(2025, 1)
+      %Puzzle{}
+
+  """
+  def get_puzzle!(year, day) do
+    Repo.get_by!(Puzzle, year: year, day: day)
   end
 end

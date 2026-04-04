@@ -21,7 +21,13 @@ defmodule AocEx.PuzzlesTest do
     end
 
     test "create_puzzle/1 with valid data creates a puzzle" do
-      valid_attrs = %{title: "some title", day: 42, year: 42, part1: "some part1", part2: "some part2"}
+      valid_attrs = %{
+        title: "some title",
+        day: 42,
+        year: 42,
+        part1: "some part1",
+        part2: "some part2"
+      }
 
       assert {:ok, %Puzzle{} = puzzle} = Puzzles.create_puzzle(valid_attrs)
       assert puzzle.title == "some title"
@@ -37,7 +43,14 @@ defmodule AocEx.PuzzlesTest do
 
     test "update_puzzle/2 with valid data updates the puzzle" do
       puzzle = puzzle_fixture()
-      update_attrs = %{title: "some updated title", day: 43, year: 43, part1: "some updated part1", part2: "some updated part2"}
+
+      update_attrs = %{
+        title: "some updated title",
+        day: 43,
+        year: 43,
+        part1: "some updated part1",
+        part2: "some updated part2"
+      }
 
       assert {:ok, %Puzzle{} = puzzle} = Puzzles.update_puzzle(puzzle, update_attrs)
       assert puzzle.title == "some updated title"

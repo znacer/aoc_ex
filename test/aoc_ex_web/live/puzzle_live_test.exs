@@ -1,11 +1,32 @@
+defmodule AocEx.Solutions.Y2042.Day05 do
+  def part1, do: 123_456
+  def part2, do: "done"
+end
+
+defmodule AocEx.Solutions.Y2042.Day06 do
+  def solve, do: raise("boom")
+end
+
 defmodule AocExWeb.PuzzleLiveTest do
   use AocExWeb.ConnCase
 
   import Phoenix.LiveViewTest
   import AocEx.PuzzlesFixtures
 
-  @create_attrs %{title: "some title", day: 42, year: 42, part1: "some part1", part2: "some part2"}
-  @update_attrs %{title: "some updated title", day: 43, year: 43, part1: "some updated part1", part2: "some updated part2"}
+  @create_attrs %{
+    title: "some title",
+    day: 42,
+    year: 42,
+    part1: "some part1",
+    part2: "some part2"
+  }
+  @update_attrs %{
+    title: "some updated title",
+    day: 43,
+    year: 43,
+    part1: "some updated part1",
+    part2: "some updated part2"
+  }
   @invalid_attrs %{title: nil, day: nil, year: nil, part1: nil, part2: nil}
   defp create_puzzle(_) do
     puzzle = puzzle_fixture()
@@ -19,7 +40,7 @@ defmodule AocExWeb.PuzzleLiveTest do
     test "lists all puzzles", %{conn: conn, puzzle: puzzle} do
       {:ok, _index_live, html} = live(conn, ~p"/puzzles")
 
-      assert html =~ "Listing Puzzles"
+      assert html =~ "Puzzle Archive"
       assert html =~ puzzle.title
     end
 
@@ -89,8 +110,9 @@ defmodule AocExWeb.PuzzleLiveTest do
     test "displays puzzle", %{conn: conn, puzzle: puzzle} do
       {:ok, _show_live, html} = live(conn, ~p"/puzzles/#{puzzle}")
 
-      assert html =~ "Show Puzzle"
       assert html =~ puzzle.title
+      assert html =~ "Problem"
+      assert html =~ "Solver Missing"
     end
 
     test "updates puzzle and returns to show", %{conn: conn, puzzle: puzzle} do
@@ -117,6 +139,43 @@ defmodule AocExWeb.PuzzleLiveTest do
       html = render(show_live)
       assert html =~ "Puzzle updated successfully"
       assert html =~ "some updated title"
+    end
+
+    test "renders computed answers when the solver exists", %{conn: conn} do
+      puzzle =
+        puzzle_fixture(%{
+          year: 2042,
+          day: 5,
+          title: "Hot Springs",
+          part1: "Find the first answer.",
+          part2: "Find the second answer."
+        })
+
+      {:ok, view, _html} = live(conn, ~p"/puzzles/#{puzzle}")
+
+      assert has_element?(view, "#puzzle-problem")
+      assert has_element?(view, "#puzzle-solution")
+      assert has_element?(view, "#puzzle-solver-status")
+      assert render(view) =~ "Solver Loaded"
+      assert render(view) =~ "123456"
+      assert render(view) =~ "done"
+      assert render(view) =~ "lib/aoc_ex/solutions/y2042/day05.ex"
+    end
+
+    test "renders solver errors clearly", %{conn: conn} do
+      puzzle =
+        puzzle_fixture(%{
+          year: 2042,
+          day: 6,
+          title: "Wait For It",
+          part1: "First statement",
+          part2: "Second statement"
+        })
+
+      {:ok, view, _html} = live(conn, ~p"/puzzles/#{puzzle}")
+
+      assert render(view) =~ "Solver Error"
+      assert render(view) =~ "boom"
     end
   end
 end

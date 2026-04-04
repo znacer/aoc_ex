@@ -17,6 +17,7 @@ defmodule AocExWeb.PuzzleLive.Form do
         <.input field={@form[:year]} type="number" label="Year" />
         <.input field={@form[:day]} type="number" label="Day" />
         <.input field={@form[:title]} type="text" label="Title" />
+        <.input field={@form[:example]} type="textarea" label="example" />
         <.input field={@form[:part1]} type="textarea" label="Part1" />
         <.input field={@form[:part2]} type="textarea" label="Part2" />
         <footer>
