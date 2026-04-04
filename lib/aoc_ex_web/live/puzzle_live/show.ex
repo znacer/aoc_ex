@@ -3,6 +3,7 @@ defmodule AocExWeb.PuzzleLive.Show do
 
   alias AocEx.Puzzles
   alias AocEx.Puzzles.Solver
+  import Puzzles.Solver, only: [pad_day: 1]
 
   @impl true
   def render(assigns) do
@@ -179,12 +180,6 @@ defmodule AocExWeb.PuzzleLive.Show do
   end
 
   defp puzzle_title(puzzle), do: "#{puzzle.year} Day #{pad_day(puzzle.day)}"
-
-  defp pad_day(day) do
-    day
-    |> Integer.to_string()
-    |> String.pad_leading(2, "0")
-  end
 
   defp status_label(:solved), do: "Solver Loaded"
   defp status_label(:missing), do: "Solver Missing"

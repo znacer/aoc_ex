@@ -1,5 +1,4 @@
 defmodule AocEx.Solutions.Y2025.Day01 do
-  require Logger
   alias AocEx.Puzzles
 
   def part1 do

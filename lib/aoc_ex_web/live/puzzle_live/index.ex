@@ -2,6 +2,7 @@ defmodule AocExWeb.PuzzleLive.Index do
   use AocExWeb, :live_view
 
   alias AocEx.Puzzles
+  import Puzzles.Solver, only: [pad_day: 1]
 
   @impl true
   def render(assigns) do
@@ -171,12 +172,6 @@ defmodule AocExWeb.PuzzleLive.Index do
     |> assign(:year_count, length(years))
     |> assign(:latest_year, latest && latest.year)
     |> assign(:latest_day, latest && latest.day)
-  end
-
-  defp pad_day(day) do
-    day
-    |> Integer.to_string()
-    |> String.pad_leading(2, "0")
   end
 
   defp format_latest_day(nil), do: "None"

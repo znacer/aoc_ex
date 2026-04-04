@@ -45,10 +45,10 @@ defmodule AocExWeb.Layouts do
       <div class="flex-none">
         <ul class="flex flex-column px-1 space-x-4 items-center">
           <li>
-            <a href="https://phoenixframework.org/" class="btn btn-ghost">Website</a>
+            <a href="https://adventofcode.com" class="btn btn-ghost">Advent of code</a>
           </li>
           <li>
-            <a href="https://github.com/phoenixframework/phoenix" class="btn btn-ghost">GitHub</a>
+            <a href="https://github.com/znacer" class="btn btn-ghost">GitHub</a>
           </li>
           <li>
             <.theme_toggle />

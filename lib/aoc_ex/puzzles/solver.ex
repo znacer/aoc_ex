@@ -130,7 +130,7 @@ defmodule AocEx.Puzzles.Solver do
     }
   end
 
-  defp pad_day(day) do
+  def pad_day(day) do
     day
     |> Integer.to_string()
     |> String.pad_leading(2, "0")
