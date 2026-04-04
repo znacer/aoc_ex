@@ -28,7 +28,8 @@ defmodule AocEx.Puzzles.Solver do
           file_path: String.t(),
           part1: String.t() | nil,
           part2: String.t() | nil,
-          error: String.t() | nil
+          error: String.t() | nil,
+          has_visualization: boolean()
         }
 
   @spec for_puzzle(Puzzle.t()) :: t()
@@ -39,6 +40,29 @@ defmodule AocEx.Puzzles.Solver do
     case Code.ensure_loaded(module) do
       {:module, ^module} -> run_solver(module, file_path)
       {:error, _reason} -> missing_result(module, file_path)
+    end
+  end
+
+  @spec has_visualization?(module()) :: boolean()
+  def has_visualization?(module) do
+    viz_module = Module.concat(module, Visualization)
+
+    case Code.ensure_loaded(viz_module) do
+      {:module, ^viz_module} -> function_exported?(viz_module, :render, 1)
+      {:error, _reason} -> false
+    end
+  end
+
+  @spec visualization_module(module()) :: module() | nil
+  def visualization_module(module) do
+    viz_module = Module.concat(module, Visualization)
+
+    case Code.ensure_loaded(viz_module) do
+      {:module, ^viz_module} ->
+        if function_exported?(viz_module, :render, 1), do: viz_module, else: nil
+
+      {:error, _reason} ->
+        nil
     end
   end
 
@@ -68,7 +92,8 @@ defmodule AocEx.Puzzles.Solver do
         file_path: file_path,
         part1: format_value(part1),
         part2: format_value(part2),
-        error: nil
+        error: nil,
+        has_visualization: has_visualization?(module)
       }
     rescue
       error ->
@@ -78,7 +103,8 @@ defmodule AocEx.Puzzles.Solver do
           file_path: file_path,
           part1: nil,
           part2: nil,
-          error: Exception.message(error)
+          error: Exception.message(error),
+          has_visualization: has_visualization?(module)
         }
     catch
       kind, reason ->
@@ -88,7 +114,8 @@ defmodule AocEx.Puzzles.Solver do
           file_path: file_path,
           part1: nil,
           part2: nil,
-          error: Exception.format_banner(kind, reason)
+          error: Exception.format_banner(kind, reason),
+          has_visualization: has_visualization?(module)
         }
     end
   end
@@ -126,7 +153,8 @@ defmodule AocEx.Puzzles.Solver do
       file_path: file_path,
       part1: nil,
       part2: nil,
-      error: nil
+      error: nil,
+      has_visualization: false
     }
   end
 

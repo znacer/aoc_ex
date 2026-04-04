@@ -23,6 +23,25 @@ defmodule AocExWeb.PuzzleLive.Show do
                 <span class={status_badge_classes(@solution.status)} id="puzzle-solver-status">
                   {status_label(@solution.status)}
                 </span>
+                <%= if @solution.has_visualization do %>
+                  <button
+                    phx-click="toggle_visualization"
+                    class={[
+                      "inline-flex items-center gap-2 rounded-full border px-3 py-1 text-sm font-medium transition-all duration-200",
+                      if(@show_visualization,
+                        do: "border-primary/30 bg-primary/10 text-primary hover:bg-primary/20",
+                        else: "border-base-300 bg-base-200 text-base-content/70 hover:bg-base-300"
+                      )
+                    ]}
+                    id="visualization-toggle"
+                  >
+                    <.icon
+                      name={if(@show_visualization, do: "hero-eye", else: "hero-eye-slash")}
+                      class="size-4"
+                    />
+                    {if(@show_visualization, do: "Hide Viz", else: "Show Viz")}
+                  </button>
+                <% end %>
               </div>
 
               <div>
@@ -162,6 +181,29 @@ defmodule AocExWeb.PuzzleLive.Show do
               </div>
             </section>
           </div>
+
+          <%= if @show_visualization && @solution.has_visualization do %>
+            <section
+              id="puzzle-visualization"
+              class="rounded-[1.5rem] border border-base-300 bg-base-100 p-6 shadow-sm"
+            >
+              <div class="flex items-center gap-3 mb-6">
+                <div class="flex size-11 items-center justify-center rounded-2xl bg-accent text-accent-content">
+                  <.icon name="hero-chart-bar-square" class="size-5" />
+                </div>
+                <div>
+                  <h2 class="text-lg font-semibold">Visualization</h2>
+                  <p class="text-sm text-base-content/65">
+                    Interactive representation of the puzzle solution.
+                  </p>
+                </div>
+              </div>
+
+              <div class="rounded-xl border border-base-200 bg-base-50/50 p-4">
+                {render_visualization(@solution.module, assigns)}
+              </div>
+            </section>
+          <% end %>
         </div>
       </section>
     </Layouts.app>
@@ -171,12 +213,19 @@ defmodule AocExWeb.PuzzleLive.Show do
   @impl true
   def mount(%{"id" => id}, _session, socket) do
     puzzle = Puzzles.get_puzzle!(id)
+    solution = Solver.for_puzzle(puzzle)
 
     {:ok,
      socket
      |> assign(:page_title, puzzle_title(puzzle))
      |> assign(:puzzle, puzzle)
-     |> assign(:solution, Solver.for_puzzle(puzzle))}
+     |> assign(:solution, solution)
+     |> assign(:show_visualization, solution.has_visualization)}
+  end
+
+  @impl true
+  def handle_event("toggle_visualization", _params, socket) do
+    {:noreply, update(socket, :show_visualization, fn val -> not val end)}
   end
 
   defp puzzle_title(puzzle), do: "#{puzzle.year} Day #{pad_day(puzzle.day)}"
@@ -195,5 +244,17 @@ defmodule AocExWeb.PuzzleLive.Show do
 
   defp status_badge_classes(:error) do
     "inline-flex items-center rounded-full border border-error/30 bg-error/10 px-3 py-1 text-sm font-medium text-error"
+  end
+
+  defp render_visualization(module, assigns) do
+    case Solver.visualization_module(module) do
+      nil ->
+        ~H"""
+        <p class="text-sm text-base-content/60 italic">No visualization available.</p>
+        """
+
+      viz_module ->
+        apply(viz_module, :render, [assigns])
+    end
   end
 end
