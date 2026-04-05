@@ -148,10 +148,6 @@ mix test test/aoc_ex/solutions/y2025/day01_test.exs
 mix precommit
 ```
 
-## 📸 Screenshots
-
-*(Add screenshots of the puzzle page, solution panel, and interactive clock visualization here)*
-
 ## 🤝 Contributing
 
 1. Fork the repository
