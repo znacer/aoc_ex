@@ -8,7 +8,6 @@
           </h1>
           <div class="space-y-6">
             <div class="flex flex-wrap items-center gap-3">
-              <%!-- <span class="inline-flex items-center rounded-full border border-warning/30 bg-warning/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-warning"> --%>
               <span class="badge badge-primary">
                 Advent of Code
               </span>
@@ -72,10 +71,9 @@
       </section>
 
       <section class="grid gap-6 w-full lg:grid-cols-[minmax(0,1.15fr)_minmax(18rem,0.85fr)]">
-        <%!-- <article class="rounded-3xl border border-base-300 bg-base-100 p-6 shadow-sm"> --%>
         <article class="card bg-base-100 border border-base-300">
           <div class="card-body">
-            <div class="card-title">
+            <div class="card-title justify-between">
               <div>
                 Recent puzzle runs
                 <p class="mt-1 text-sm text-base-content/65">
@@ -90,18 +88,19 @@
               </.link>
             </div>
 
-            <%!-- <div class="mt-6 space-y-3"> --%>
             <%= if @recent_puzzles == [] do %>
               <div class="rounded-[1.25rem] border border-dashed border-base-300 bg-base-200/60 p-6 text-sm text-base-content/65">
                 No puzzle entries yet. Start with a generated puzzle record, then add the solver module for the day.
               </div>
             <% end %>
 
-            <%= for puzzle <- @recent_puzzles do %>
+            <%= for entry <- @recent_puzzles do %>
+              <% puzzle = entry.puzzle %>
+              <% solution = entry.solution %>
               <div class="card w-96 bg-base-100 card-sm shadow-sm">
                 <.link
                   navigate={~p"/puzzles/#{puzzle}"}
-                  class="group flex items-center justify-between gap-4 rounded-[1.25rem] border border-base-300 bg-base-100 px-4 py-4 transition hover:-translate-y-0.5 hover:border-primary/25 hover:bg-base-200/60"
+                  class="group flex items-center justify-between gap-4  border border-base-300 bg-base-100 px-4 py-4 transition hover:-translate-y-0.5 hover:border-primary/25 hover:bg-base-200/60"
                 >
                   <div class="card-body">
                     <h2 class="card-title">
@@ -110,23 +109,28 @@
                       </span>
                       <span class="truncate text-base font-semibold">{puzzle.title}</span>
                     </h2>
-                    <span class="badge badge-success">
-                      Part 1
-                    </span>
-                    <span class="badge badge-neutral">
-                      Part 2
-                    </span>
-                    <span class="badge badge-primary">
-                      <.icon
-                        name="hero-presentation-chart-line"
-                        class="size-5 text-primary-content"
-                      /> Visualization
-                    </span>
+                    <div class="flex gap-2">
+                      <%= if solution.status == :solved do %>
+                        <span class="badge badge-success">
+                          Part 1
+                        </span>
+                        <span class="badge badge-success">
+                          Part 2
+                        </span>
+                      <% end %>
+                      <%= if solution.has_visualization do %>
+                        <span class="badge badge-primary">
+                          <.icon
+                            name="hero-presentation-chart-line"
+                            class="size-5 text-primary-content"
+                          /> Visualization
+                        </span>
+                      <% end %>
+                    </div>
                   </div>
                 </.link>
               </div>
             <% end %>
-            <%!-- </div> --%>
           </div>
         </article>
       </section>
