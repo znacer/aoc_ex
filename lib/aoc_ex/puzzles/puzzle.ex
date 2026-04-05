@@ -13,6 +13,15 @@ defmodule AocEx.Puzzles.Puzzle do
     timestamps(type: :utc_datetime)
   end
 
+  @type t() :: %__MODULE__{
+          year: integer(),
+          day: integer(),
+          title: String.t(),
+          example: String.t() | nil,
+          part1: String.t() | nil,
+          part2: String.t() | nil
+        }
+
   @doc false
   def changeset(puzzle, attrs) do
     puzzle
