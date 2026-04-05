@@ -148,14 +148,6 @@ mix test test/aoc_ex/solutions/y2025/day01_test.exs
 mix precommit
 ```
 
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-day`)
-3. Commit your changes (`git commit -m 'Add Day 05 solution & visualization'`)
-4. Push to the branch (`git push origin feature/amazing-day`)
-5. Open a Pull Request
-
 ## 📜 License
 
 This project is open source and available under the [MIT License](LICENSE).
