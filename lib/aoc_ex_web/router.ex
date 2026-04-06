@@ -1,6 +1,8 @@
 defmodule AocExWeb.Router do
   use AocExWeb, :router
 
+  import AocExWeb.UserAuth
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -8,6 +10,7 @@ defmodule AocExWeb.Router do
     plug :put_root_layout, html: {AocExWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug :fetch_current_scope_for_user
   end
 
   pipeline :api do
@@ -20,9 +23,7 @@ defmodule AocExWeb.Router do
     get "/", PageController, :home
 
     live "/puzzles", PuzzleLive.Index, :index
-    live "/puzzles/new", PuzzleLive.Form, :new
     live "/puzzles/:id", PuzzleLive.Show, :show
-    live "/puzzles/:id/edit", PuzzleLive.Form, :edit
   end
 
   # Other scopes may use custom stacks.
@@ -45,5 +46,36 @@ defmodule AocExWeb.Router do
       live_dashboard "/dashboard", metrics: AocExWeb.Telemetry
       forward "/mailbox", Plug.Swoosh.MailboxPreview
     end
+  end
+
+  ## Authentication routes
+
+  scope "/", AocExWeb do
+    pipe_through [:browser, :require_authenticated_user]
+
+    live_session :require_authenticated_user,
+      on_mount: [{AocExWeb.UserAuth, :require_authenticated}] do
+      live "/users/settings", UserLive.Settings, :edit
+      live "/users/settings/confirm-email/:token", UserLive.Settings, :confirm_email
+
+      live "/new_puzzle", PuzzleLive.Form, :new
+      live "/puzzles/:id/edit", PuzzleLive.Form, :edit
+    end
+
+    post "/users/update-password", UserSessionController, :update_password
+  end
+
+  scope "/", AocExWeb do
+    pipe_through [:browser]
+
+    live_session :current_user,
+      on_mount: [{AocExWeb.UserAuth, :mount_current_scope}] do
+      live "/users/register", UserLive.Registration, :new
+      live "/users/log-in", UserLive.Login, :new
+      live "/users/log-in/:token", UserLive.Confirmation, :new
+    end
+
+    post "/users/log-in", UserSessionController, :create
+    delete "/users/log-out", UserSessionController, :delete
   end
 end

@@ -10,7 +10,6 @@ defmodule AocExWeb.PuzzleLive.Index do
     <Layouts.app flash={@flash}>
       <section class="space-y-8">
         <section class="relative overflow-hidden rounded-[2rem] border border-base-300 bg-base-100 shadow-2xl shadow-base-content/5">
-          <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(251,191,36,0.18),_transparent_30%),radial-gradient(circle_at_80%_20%,_rgba(34,197,94,0.15),_transparent_26%),linear-gradient(135deg,rgba(15,23,42,0.06),transparent_45%)]" />
           <div class="relative space-y-8 p-6 sm:p-8">
             <.header>
               <div class="space-y-4">
@@ -37,7 +36,7 @@ defmodule AocExWeb.PuzzleLive.Index do
                   <.button navigate={~p"/"}>
                     <.icon name="hero-home" /> Home
                   </.button>
-                  <.button variant="primary" navigate={~p"/puzzles/new"}>
+                  <.button variant="primary" navigate={~p"/new_puzzle"}>
                     <.icon name="hero-plus" /> New Puzzle
                   </.button>
                 </div>
